@@ -1,4 +1,3 @@
-import games from '../../../data.js'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 type Data = {
