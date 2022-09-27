@@ -1,6 +1,9 @@
 import React from 'react'
 
-type Props = {}
+type Props = {
+  currentConference: string,
+  updateConference: (e: React.ChangeEvent<HTMLSelectElement>) => void
+}
 
 function ConferenceSelect({updateConference, currentConference}: Props) {
   return (
