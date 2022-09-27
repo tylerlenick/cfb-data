@@ -1,12 +1,27 @@
-import React from 'react'
+import { React, useState } from 'react'
+import useSWR from 'swr'
+import ConferenceSelect from '../components/ConferenceSelect'
 
 type Props = {}
 
-export default function Cfb(data: Props) {
-  console.log(data);
+const fetcher = (...args) => fetch(...args).then((res) => res.json())
+
+export default function Cfb() {
+  const {data, error} = useSWR('/api/games', fetcher);
+  
+  if (error) return <div>failed to load</div>
+  if (!data) return <div>loading...</div>
+
+  const [currentConference, setCurrentConference] = useState('');
+  const updateConference = (e) => {
+    setCurrentConference(e.target.value);
+  }
+  
   return (
     <div>
-      {data.data.map(game => {
+      <ConferenceSelect updateConference={updateConference}/>
+      <br/>
+      {data.map(game => {
         return (
           <div key={game.id}>
             <h2>Home: {game.home_team}</h2>
@@ -19,17 +34,4 @@ export default function Cfb(data: Props) {
     </div>
   );
  
-}
-
-export async function getServerSideProps({}: Props) {  
-    const res = await fetch("https://api.collegefootballdata.com/games?year=2022&week=5&seasonType=regular&conference=acc",{
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer KHu8dwjcryDQZT2yYjfTjfnkhQIFcnAnSOyaY7duebLX4vJqMBjNQ0+RlTa6+lFz"
-        }
-    });
-
-    const data = await res.json();
-  
-    return { props: { data } };
 }
